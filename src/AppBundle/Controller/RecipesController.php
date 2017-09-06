@@ -17,11 +17,11 @@ class RecipesController extends Controller
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"new_recipe"})
      * @Rest\Post("/users/{name}/recipes.json")
      */
-    public function postRecipes(Request $request)
+    public function postRecipes(Request $requestRecipesPost)
     {
         $user = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:UsersUser')
-            ->findOneBy(array('username' => $request->get('name')));
+            ->findOneBy(array('username' => $requestRecipesPost->get('name')));
         /* @var $user UsersUser */
 
         if (empty($user)) {
@@ -30,7 +30,7 @@ class RecipesController extends Controller
 
         $recipes = new RecipesRecipe();
         $recipesForm = $this->createForm(RecipesRecipeType::class, $recipes);
-        $recipesForm->submit($request->request->all());
+        $recipesForm->submit($requestRecipesPost->request->all());
 
         if ($recipesForm->isValid()) {
             $recipes->setUser($user);
@@ -47,14 +47,14 @@ class RecipesController extends Controller
      * @Rest\View(serializerGroups={"user_recipes"})
      * @Rest\Get("/users/{name}/recipes.json")
      */
-    public function getRecipesUsername(Request $request)
+    public function getRecipesUsername(Request $requestUsername)
     {
         $recipes = $this->get('doctrine.orm.entity_manager')
             ->createQueryBuilder()
             ->select(['recipe.id', 'recipe.name', 'recipe.slug'])
             ->from('AppBundle:RecipesRecipe', 'recipe')
             ->innerJoin('recipe.user', 'recipeuser')
-            ->where('recipeuser.username = :name')->setParameter('name', $request->get('name'))
+            ->where('recipeuser.username = :name')->setParameter('name', $requestUsername->get('name'))
             ->getQuery()
             ->getScalarResult();
         /* @var $recipes RecipesRecipe */
@@ -73,9 +73,9 @@ class RecipesController extends Controller
      * @Rest\View(serializerGroups={"recipesByName"})
      * @Rest\Get("/recipes/{name}")
      */
-    public function getRecipesName(Request $request)
+    public function getRecipesName(Request $requestRecipesName)
     {
-        $recipeName = explode('.', $request->get('name'))[0];
+        $recipeName = explode('.', $requestRecipesName->get('name'))[0];
         $recipes = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:RecipesRecipe')
             ->findOneBy(array('slug' => $recipeName));
@@ -94,7 +94,7 @@ class RecipesController extends Controller
      * @Rest\View(serializerGroups={"recipes"})
      * @Rest\Get("/recipes.json")
      */
-    public function getRecipes(Request $request)
+    public function getRecipes(Request $requestRecipes)
     {
         $recipes = $this->get('doctrine.orm.entity_manager')
             ->getRepository('AppBundle:RecipesRecipe')
