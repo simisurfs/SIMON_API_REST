@@ -40,7 +40,7 @@
         <option name="fixed"/>
       </options>
     </field>
-    <field name="lastLogin" type="datetime" column="last_login" nullable="true"/>
+    <field name="last_login" type="datetime" column="last_login" nullable="true"/>
     <field name="confirmationToken" type="string" column="confirmation_token" length="180" nullable="true">
       <options>
         <option name="fixed"/>

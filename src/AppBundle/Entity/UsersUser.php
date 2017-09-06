@@ -66,7 +66,7 @@ class UsersUser
      *
      * @ORM\Column(name="last_login", type="datetime", nullable=true)
      */
-    private $lastLogin;
+    private $last_login;
 
     /**
      * @var string
@@ -269,27 +269,27 @@ class UsersUser
     }
 
     /**
-     * Set lastLogin
+     * Set last_login
      *
-     * @param \DateTime $lastLogin
+     * @param \DateTime $last_login
      *
      * @return UsersUser
      */
-    public function setLastLogin($lastLogin)
+    public function setLastLogin($last_login)
     {
-        $this->lastLogin = $lastLogin;
+        $this->last_login = $last_login;
 
         return $this;
     }
 
     /**
-     * Get lastLogin
+     * Get last_login
      *
      * @return \DateTime
      */
     public function getLastLogin()
     {
-        return $this->lastLogin;
+        return $this->last_login;
     }
 
     /**

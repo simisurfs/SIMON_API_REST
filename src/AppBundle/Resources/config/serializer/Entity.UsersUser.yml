@@ -3,7 +3,7 @@ AppBundle\Entity\UsersUser:
     properties:
         username:
             groups: ['recipesByName']
-        lastLogin:
+        last_login:
             groups: ['recipesByName']
         id:
             groups: ['recipesByName']
