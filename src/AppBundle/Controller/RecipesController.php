@@ -14,49 +14,40 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 class RecipesController extends Controller
 {
     /**
-     * @Rest\View(serializerGroups={"recipes"})
-     * @Rest\Get("/recipes.json")
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"new_recipe"})
+     * @Rest\Post("/users/{name}/recipes.json")
      */
-    public function getRecipesAction(Request $request)
+    public function postRecipes(Request $request)
     {
-        $recipes = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:RecipesRecipe')
-            ->findAll();
+        $user = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:UsersUser')
+            ->findOneBy(array('username' => $request->get('name')));
+        /* @var $user UsersUser */
 
-        /* @var $recipes RecipesRecipe */
-        if (empty($recipes)) {
-            return new JsonResponse(['code' => 404, 'message' => 'recipes not found'], Response::HTTP_NOT_FOUND);
+        if (empty($user)) {
+            return new JsonResponse(['code' => 404, 'message' => 'user not found'], Response::HTTP_NOT_FOUND);
         }
 
-        return ["code" => 200,
-            "message" => "success",
-            "datas" => $recipes];
-    }
-    /**
-     * @Rest\View(serializerGroups={"recipesByName"})
-     * @Rest\Get("/recipes/{name}")
-     */
-    public function getRecipesByNameAction(Request $request)
-    {
-        $name = explode('.', $request->get('name'))[0];
-        $recipes = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:RecipesRecipe')
-            ->findOneBy(array('slug' => $name));
+        $recipes = new RecipesRecipe();
+        $recipesForm = $this->createForm(RecipesRecipeType::class, $recipes);
+        $recipesForm->submit($request->request->all());
 
-        /* @var $recipes RecipesRecipe */
-        if (empty($recipes)) {
-            return new JsonResponse(['code' => 404, 'message' => 'recipes not found'], Response::HTTP_NOT_FOUND);
+        if ($recipesForm->isValid()) {
+            $recipes->setUser($user);
+            $entityManager = $this->get('doctrine.orm.entity_manager');
+            $entityManager->persist($recipes);
+            $entityManager->flush();
+            return ["code" => 201, "message" => "success", "datas"=> $recipes];
+        } else {
+            return $recipesForm;
         }
-
-        return ["code" => 200,
-            "message" => "success",
-            "datas" => $recipes];
     }
+
     /**
      * @Rest\View(serializerGroups={"user_recipes"})
      * @Rest\Get("/users/{name}/recipes.json")
      */
-    public function getRecipesByUsernameAction(Request $request)
+    public function getRecipesUsername(Request $request)
     {
         $recipes = $this->get('doctrine.orm.entity_manager')
             ->createQueryBuilder()
@@ -79,39 +70,45 @@ class RecipesController extends Controller
     }
 
     /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"new_recipe"})
-     * @Rest\Post("/users/{name}/recipes.json")
+     * @Rest\View(serializerGroups={"recipesByName"})
+     * @Rest\Get("/recipes/{name}")
      */
-    public function postRecipes(Request $request)
+    public function getRecipesName(Request $request)
     {
-        $user = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:UsersUser')
-            ->findOneBy(array('username' => $request->get('name')));
-        /* @var $user UsersUser */
+        $recipeName = explode('.', $request->get('name'))[0];
+        $recipes = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:RecipesRecipe')
+            ->findOneBy(array('slug' => $recipeName));
 
-        if (empty($user)) {
-            return new JsonResponse(['code' => 404, 'message' => 'user not found'], Response::HTTP_NOT_FOUND);
+        /* @var $recipes RecipesRecipe */
+        if (empty($recipes)) {
+            return new JsonResponse(['code' => 404, 'message' => 'recipes not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $recipes = new RecipesRecipe();
-        $form = $this->createForm(RecipesRecipeType::class, $recipes);
-        $form->submit($request->request->all());
-
-        if ($form->isValid()) {
-            $recipes->setUser($user);
-            $em = $this->get('doctrine.orm.entity_manager');
-            $em->persist($recipes);
-            $em->flush();
-            return ["code" => 201, "message" => "success", "datas"=> $recipes];
-        } else {
-            return $form;
-        }
+        return ["code" => 200,
+            "message" => "success",
+            "datas" => $recipes];
     }
 
+    /**
+     * @Rest\View(serializerGroups={"recipes"})
+     * @Rest\Get("/recipes.json")
+     */
+    public function getRecipes(Request $request)
+    {
+        $recipes = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('AppBundle:RecipesRecipe')
+            ->findAll();
 
+        /* @var $recipes RecipesRecipe */
+        if (empty($recipes)) {
+            return new JsonResponse(['code' => 404, 'message' => 'recipes not found'], Response::HTTP_NOT_FOUND);
+        }
 
-
-
+        return ["code" => 200,
+            "message" => "success",
+            "datas" => $recipes];
+    }
 
 }
 
