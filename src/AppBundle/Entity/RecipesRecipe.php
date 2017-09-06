@@ -131,7 +131,7 @@ class RecipesRecipe
      *
      * @return RecipesRecipe
      */
-    public function setStep($step)
+    public function setStep( array $step)
     {
         $this->step = $step;
 
@@ -145,7 +145,7 @@ class RecipesRecipe
      */
     public function getStep()
     {
-        return $this->step;
+        return array($this->step);
     }
 
     /**
