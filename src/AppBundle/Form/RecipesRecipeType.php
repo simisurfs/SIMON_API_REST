@@ -15,7 +15,7 @@ class RecipesRecipeType extends AbstractType
     {
         $builder->add('name')->add('slug')->add('step')->add('user')->add('category');
     }
-    
+
     /**
      * {@inheritdoc}
      */

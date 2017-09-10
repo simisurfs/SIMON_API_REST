@@ -2,12 +2,12 @@ AppBundle\Entity\RecipesRecipe:
     exclusion_policy: none
     properties:
         id:
-            groups: ['recipes', 'recipesByName', 'user_recipes', 'new_recipe']
+            groups: ['recipes', 'recipesName', 'userRecipes', 'postRecipe']
         name:
-            groups: ['recipes', 'recipesByName', 'user_recipes', 'new_recipe']
+            groups: ['recipes', 'recipesName', 'userRecipes', 'postRecipe']
         slug:
-            groups: ['recipes', 'recipesByName', 'user_recipes', 'new_recipe']
+            groups: ['recipes', 'recipesName', 'userRecipes', 'postRecipe']
         user:
-            groups: ['recipesByName', 'new_recipe']
+            groups: ['recipesName', 'postRecipe']
         step:
-            groups: ['recipesByName', 'new_recipe']
+            groups: ['recipesName', 'postRecipe']

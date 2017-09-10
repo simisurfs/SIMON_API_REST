@@ -17,7 +17,7 @@ class UsersAccessToken
      *
      * @ORM\Column(name="token", type="string", length=255, nullable=false)
      */
-    private $token;
+    private $value;
 
     /**
      * @var integer
@@ -65,27 +65,27 @@ class UsersAccessToken
 
 
     /**
-     * Set token
+     * Set value
      *
-     * @param string $token
+     * @param string $value
      *
      * @return UsersAccessToken
      */
-    public function setToken($token)
+    public function setValue($value)
     {
-        $this->token = $token;
+        $this->value = $value;
 
         return $this;
     }
 
     /**
-     * Get token
+     * Get value
      *
      * @return string
      */
-    public function getToken()
+    public function getValue()
     {
-        return $this->token;
+        return $this->value;
     }
 
     /**

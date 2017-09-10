@@ -1,0 +1,4 @@
+a36aff,127.0.0.1,GET,http://localhost:8000/api/users/etna/recipes.json,1505064715,3b498d,401
+3b498d,127.0.0.1,POST,http://localhost:8000/api/users/etna/recipes.json,1505064715,,401
+eb8d67,127.0.0.1,GET,http://localhost:8000/api/users/etna/recipes.json,1505066322,f4bea6,401
+f4bea6,127.0.0.1,POST,http://localhost:8000/api/users/etna/recipes.json,1505066322,,401

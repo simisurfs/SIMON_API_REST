@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Security\Authorization\Voter\RecipesRecipeVoter;
 
 /**
  * RecipesRecipe
@@ -131,7 +132,7 @@ class RecipesRecipe
      *
      * @return RecipesRecipe
      */
-    public function setStep( array $step)
+    public function setStep($step)
     {
         $this->step = $step;
 

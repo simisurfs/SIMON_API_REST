@@ -11,7 +11,7 @@
     <id name="id" type="integer" column="id">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="token" type="string" column="token" length="255" nullable="false">
+    <field name="value" type="string" column="token" length="255" nullable="false">
       <options>
         <option name="fixed"/>
       </options>

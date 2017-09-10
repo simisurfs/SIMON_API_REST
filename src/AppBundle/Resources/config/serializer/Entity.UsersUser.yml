@@ -2,10 +2,10 @@ AppBundle\Entity\UsersUser:
     exclusion_policy: none
     properties:
         username:
-            groups: ['recipesByName', 'new_recipe']
+            groups: ['recipesName', 'postRecipe']
         last_login:
-            groups: ['recipesByName', 'new_recipe']
+            groups: ['recipesName', 'postRecipe']
         id:
-            groups: ['recipesByName', 'new_recipe']
+            groups: ['recipesName', 'postRecipe']
         recipes:
             groups: []

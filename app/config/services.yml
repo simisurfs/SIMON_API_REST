@@ -4,7 +4,7 @@ parameters:
     #parameter_name: value
 
 services:
-    # default configuration for services in *this* file
+    # default configuration for services in this file
     _defaults:
         # automatically injects dependencies in your services
         autowire: true
@@ -33,3 +33,29 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+
+    auth_token_user_provider:
+        class: AppBundle\Security\Authorization\AuthTokenUserProvider
+        arguments: ["@auth_token_repository", "@user_repository"]
+        public:    false
+
+    auth_token_repository:
+        class:   Doctrine\ORM\EntityManager
+        factory: ["@doctrine.orm.entity_manager", "getRepository"]
+        arguments: ["AppBundle:UsersAccessToken"]
+
+    user_repository:
+        class:   Doctrine\ORM\EntityManager
+        factory: ["@doctrine.orm.entity_manager", "getRepository"]
+        arguments: ["AppBundle:UsersUser"]
+
+    auth_token_authenticator:
+        class:     AppBundle\Security\Authorization\AuthTokenAuthenticator
+        arguments: ["@security.http_utils"]
+        public:    false
+
+    security.access.recipes_recipe_voter:
+      class:      AppBundle\Security\Authorization\Voter\RecipesRecipeVoter
+      public:     false
+      tags:
+         - { name: security.voter }

@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * UsersUser
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="users__user", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_37C1021B92FC23A8", columns={"username_canonical"}), @ORM\UniqueConstraint(name="UNIQ_37C1021BA0D96FBF", columns={"email_canonical"}), @ORM\UniqueConstraint(name="UNIQ_37C1021BC05FB297", columns={"confirmation_token"})})
  * @ORM\Entity
  */
-class UsersUser
+class UsersUser implements UserInterface
 {
     /**
      * @var string
@@ -269,21 +270,21 @@ class UsersUser
     }
 
     /**
-     * Set last_login
+     * Set lastLogin
      *
-     * @param \DateTime $last_login
+     * @param \DateTime $lastLogin
      *
      * @return UsersUser
      */
-    public function setLastLogin($last_login)
+    public function setLastLogin($lastLogin)
     {
-        $this->last_login = $last_login;
+        $this->last_login = $lastLogin;
 
         return $this;
     }
 
     /**
-     * Get last_login
+     * Get lastLogin
      *
      * @return \DateTime
      */
@@ -372,5 +373,11 @@ class UsersUser
     public function getId()
     {
         return $this->id;
+    }
+
+    public function eraseCredentials()
+    {
+        // Suppression des données sensibles
+        $this->plainPassword = null;
     }
 }

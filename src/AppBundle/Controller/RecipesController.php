@@ -8,20 +8,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Security\Authorization\Voter\RecipesRecipeVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 
 class RecipesController extends Controller
 {
     /**
-     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"new_recipe"})
+     * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"postRecipe"})
      * @Rest\Post("/users/{name}/recipes.json")
      */
-    public function postRecipes(Request $requestRecipesPost)
+    public function postRecipesAction(Request $request)
     {
-        $user = $this->get('doctrine.orm.entity_manager')
-            ->getRepository('AppBundle:UsersUser')
-            ->findOneBy(array('username' => $requestRecipesPost->get('name')));
+        $entity = $this->getDoctrine()->getManager();
+        $user = $entity->getRepository('AppBundle:UsersUser')
+            ->findOneBy(['username' => $request->get('name')]);
         /* @var $user UsersUser */
 
         if (empty($user)) {
@@ -29,22 +30,32 @@ class RecipesController extends Controller
         }
 
         $recipes = new RecipesRecipe();
-        $recipesForm = $this->createForm(RecipesRecipeType::class, $recipes);
-        $recipesForm->submit($requestRecipesPost->request->all());
+        $form = $this->createForm(RecipesRecipeType::class, $recipes);
+        $recipes->setUser($user);
 
-        if ($recipesForm->isValid()) {
+        $authChecker = $this->get('security.authorization_checker');
+        if (!$authChecker->isGranted(RecipesRecipeVoter::EDIT, $recipes)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form->submit($request->request->all());
+
+        if ($form->isValid()) {
             $recipes->setUser($user);
-            $entityManager = $this->get('doctrine.orm.entity_manager');
-            $entityManager->persist($recipes);
-            $entityManager->flush();
-            return ["code" => 201, "message" => "success", "datas"=> $recipes];
+            $entity->persist($recipes);
+            $entity->flush();
+            return [
+                "code" => 201,
+                "message" => "success",
+                "datas" => $recipes
+            ];
         } else {
-            return $recipesForm;
+            return $form;
         }
     }
 
     /**
-     * @Rest\View(serializerGroups={"user_recipes"})
+     * @Rest\View(serializerGroups={"userRecipes"})
      * @Rest\Get("/users/{name}/recipes.json")
      */
     public function getRecipesUsername(Request $requestUsername)
@@ -70,7 +81,7 @@ class RecipesController extends Controller
     }
 
     /**
-     * @Rest\View(serializerGroups={"recipesByName"})
+     * @Rest\View(serializerGroups={"recipesName"})
      * @Rest\Get("/recipes/{name}")
      */
     public function getRecipesName(Request $requestRecipesName)
